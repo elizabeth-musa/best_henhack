@@ -1,12 +1,37 @@
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>My Electron App</title>
-  </head>
-  <body>
-    <h1>Hello, Electron!</h1>
-    <p>Your project is now running.</p>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Welcome</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}
+    .nav-buttons{display:flex;gap:8px;margin-top:12px}
+    .btn{padding:8px 12px;background:#007acc;color:#fff;text-decoration:none;border-radius:6px}
+    .btn:hover{opacity:0.9}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="welcome">Welcome</h1>
+    <p id="date" aria-live="polite"></p>
     <script src="renderer.js"></script>
-  </body>
+    <nav class="nav-buttons" aria-label="Main navigation">
+      <a class="btn" href="scribble.html">Scribble Page</a>
+      <a class="btn" href="moodtracker.html">Moodtracker Page</a>
+      <a class="btn" href="calendar.html">Calendar Page</a>
+      <a class="btn" href="addtasks.html">Add Tasks</a>
+    </nav>
+  </header>
+
+  <script>
+    // display current date
+    const dateEl = document.getElementById('date');
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString(undefined, {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  </script>
+</body>
 </html>
