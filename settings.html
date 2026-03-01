@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,16 +14,50 @@
   </header>
 
   <main>
-    <button type="button">themes</button>
-    <br><br>
-    <button type="button">music</button>
+
+    <!-- Main Settings Buttons -->
+    <section id="settingsMenu">
+      <button type="button" onclick="showThemes()">themes</button>
+      <br><br>
+      <button type="button">music</button>
+    </section>
+
+    <!-- Themes Section (Hidden Initially) -->
+    <section id="themesSection" style="display:none;">
+      <h3>themes</h3>
+
+      <button type="button">dreamscape</button>
+      <br><br>
+
+      <button type="button">cozy</button>
+      <br><br>
+
+      <button type="button">cloudy</button>
+      <br><br>
+
+      <button type="button">original</button>
+      <br><br>
+
+      <button type="button" onclick="goBack()">⬅ back</button>
+    </section>
+
   </main>
 
   <footer>
-    <a href="home.html">🏠 Home</a>
+    <a href="index.html">🏠 Home</a>
   </footer>
 
-  <script src="renderer.js"></script>
+  <script>
+    function showThemes() {
+      document.getElementById("settingsMenu").style.display = "none";
+      document.getElementById("themesSection").style.display = "block";
+    }
+
+    function goBack() {
+      document.getElementById("themesSection").style.display = "none";
+      document.getElementById("settingsMenu").style.display = "block";
+    }
+  </script>
 
 </body>
 </html>
