@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>boji - Home</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -14,6 +15,32 @@
 
   <main>
     <p id="date"></p>
+
+    <!-- navigation buttons -->
+    <nav id="home-nav">
+      <button id="scribble-link" onclick="location.href='scribble.html'">scribble log</button>
+      <button id="calendar-link" onclick="location.href='calendar.html'">calendar</button>
+      <button id="tasks-link">tasks</button>
+    </nav>
+
+    <!-- progress indicator placeholder -->
+    <section id="progress-section">
+      <div id="circular-progress">
+        <span id="progress-text">0%</span>
+      </div>
+    </section>
+
+    <!-- simplified task list -->
+    <section id="tasks-section">
+      <ul id="task-list">
+        <li>
+          <button class="delete-task">x</button>
+          <span class="task-text">task 1</span>
+        </li>
+        <!-- more tasks will be injected here -->
+      </ul>
+      <button id="add-task">+</button>
+    </section>
   </main>
 
   <footer>
