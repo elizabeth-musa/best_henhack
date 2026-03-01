@@ -11,17 +11,20 @@
 
   <header>
     <h1>boji</h1>
-  </header>
+  </header>  
+  
+  <div id="container"> <!-- for layout boundaries if needed -->
 
   <main>
-    <p id="date"></p>
+    <div id="left-column">
+      <p id="date"></p>
 
-    <!-- navigation buttons -->
-    <nav id="home-nav">
-      <button id="scribble-link" onclick="location.href='scribble.html'">scribble log</button>
-      <button id="calendar-link" onclick="location.href='calendar.html'">calendar</button>
-      <button id="tasks-link">tasks</button>
-    </nav>
+      <!-- navigation buttons -->
+      <nav id="home-nav">
+        <button id="scribble-link" onclick="location.href='scribble.html'">scribble log</button>
+        <button id="calendar-link" onclick="location.href='calendar.html'">calendar</button>
+      </nav>
+    </div>
 
     <!-- progress indicator placeholder -->
     <section id="progress-section">
@@ -30,24 +33,46 @@
       </div>
     </section>
 
+    <!-- add-task button under progress ring -->
+    <div id="add-task-container">
+      <button id="add-task">+</button>
+    </div>
+
     <!-- simplified task list -->
     <section id="tasks-section">
-      <ul id="task-list">
-        <li>
-          <button class="delete-task">x</button>
-          <span class="task-text">task 1</span>
-        </li>
-        <!-- more tasks will be injected here -->
-      </ul>
-      <button id="add-task">+</button>
+      <div id="task-input-row">
+        <input type="text" id="task-input" placeholder="add a task...">
+        <button id="task-submit">add</button>
+      </div>
+      <ul id="task-list"></ul>
     </section>
   </main>
 
+  </div> <!-- end container -->
   <footer>
-    <a href="settings.html">⚙ Settings</a>
+    <a href="settings.html"><img id="settings-icon" src="settings.png" alt="settings"></a>
   </footer>
 
+  <!-- modal for adding tasks -->
+  <div id="task-modal" class="hidden">
+    <div id="modal-content">
+      <label for="modal-input">New task:</label>
+      <input type="text" id="modal-input">
+      <div id="modal-buttons">
+        <button id="modal-add">Add</button>
+        <button id="modal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="renderer.js"></script>
+  <script>
+    (function() {
+      var themes = { dreamscape: '#fadadd', comfort: '#cce5ff', original: '#ffffff' };
+      var saved = localStorage.getItem('boji-theme');
+      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+    })();
+  </script>
 
 </body>
 </html>

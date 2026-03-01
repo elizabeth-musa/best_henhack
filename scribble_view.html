@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>boji - Scribble</title>
+</head>
+<body>
+  <header>
+    <h1>boji</h1>
+    <h2>scribble</h2>
+  </header>
+  <main>
+    <div id="scribble-content"></div>
+  </main>
+  <footer>
+    <a href="scribble.html">⬅ back</a>
+  </footer>
+  <script>
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    const contentDiv = document.getElementById('scribble-content');
+    const id = getQueryParam('id');
+    if (id) {
+      const stored = localStorage.getItem('scribbles');
+      const scribbles = stored ? JSON.parse(stored) : [];
+      const entry = scribbles.find(s => s.id === id);
+      if (entry) {
+        contentDiv.textContent = entry.text;
+      } else {
+        contentDiv.textContent = 'Scribble not found';
+      }
+    } else {
+      contentDiv.textContent = 'No scribble specified';
+    }
+  </script>
+</body>
+</html>

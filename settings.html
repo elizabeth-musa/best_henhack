@@ -26,10 +26,13 @@
     <section id="themesSection" style="display:none;">
       <h3>themes</h3>
 
-      <button type="button">dreamscape</button>
+      <button type="button" onclick="applyTheme('dreamscape')">dreamscape 🌸</button>
       <br><br>
 
-      <button type="button">original</button>
+      <button type="button" onclick="applyTheme('comfort')">comfort 💙</button>
+      <br><br>
+
+      <button type="button" onclick="applyTheme('original')">original</button>
       <br><br>
 
       <button type="button" onclick="goBack()">⬅ back</button>
@@ -42,6 +45,17 @@
   </footer>
 
   <script>
+    var themes = {
+      dreamscape: '#fadadd',
+      comfort:    '#cce5ff',
+      original:   '#ffffff'
+    };
+
+    function applyTheme(name) {
+      localStorage.setItem('boji-theme', name);
+      document.body.style.backgroundColor = themes[name] || '';
+    }
+
     function showThemes() {
       document.getElementById("settingsMenu").style.display = "none";
       document.getElementById("themesSection").style.display = "block";
@@ -51,6 +65,12 @@
       document.getElementById("themesSection").style.display = "none";
       document.getElementById("settingsMenu").style.display = "block";
     }
+
+    // apply saved theme on load
+    (function() {
+      var saved = localStorage.getItem('boji-theme');
+      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+    })();
   </script>
 
 </body>
