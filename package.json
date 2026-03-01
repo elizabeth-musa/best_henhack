@@ -9,5 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^40.6.1",
+    "electron-reload": "^2.0.0-alpha.1"
+  }
 }
