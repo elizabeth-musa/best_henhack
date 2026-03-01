@@ -3,39 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>boji - Scribble</title>
+  <title>boji - past scribbles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #scribble-view-main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 5rem;
+    }
+    #scribble-view-main h2 {
+      font-family: 'Pixelify Sans', sans-serif;
+      color: #b05a5a;
+      margin-bottom: 1.2rem;
+      font-size: 1.4rem;
+      text-align: center;
+      animation: fadeIn 0.4s ease both;
+    }
+    #scribble-empty {
+      text-align: center;
+      color: #c4885a;
+      font-style: italic;
+      margin-top: 3rem;
+      animation: fadeIn 0.4s ease both;
+    }
+    .scribble-card {
+      background: #fffaf4;
+      border: 1px solid #edd9bb;
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 10px rgba(210,140,100,0.1);
+      animation: popIn 0.35s ease both;
+    }
+    .scribble-card-date {
+      font-size: 0.72rem;
+      color: #c4885a;
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.03em;
+    }
+    .scribble-card-title {
+      font-family: 'Pixelify Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #b05a5a;
+      margin-bottom: 0.4rem;
+    }
+    .scribble-card-text {
+      font-family: 'Pixelify Sans', sans-serif;
+      font-size: 0.97rem;
+      color: #5c4a3a;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.65;
+    }
+    .scribble-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      justify-content: flex-end;
+    }
+    .scribble-card-actions button {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.8rem;
+      border-radius: 10px;
+      box-shadow: none;
+      animation: none;
+      cursor: pointer;
+    }
+    .btn-task {
+      background: transparent;
+      border: 1px solid #d4a96a;
+      color: #a07840;
+    }
+    .btn-task:hover { background: #fdf0dc; transform: none; }
+    .btn-delete {
+      background: transparent;
+      border: 1px solid #e8848a;
+      color: #b05a5a;
+    }
+    .btn-delete:hover { background: #fde8e8; transform: none; }
+    #back-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    #toast {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      background: #5c4a3a;
+      color: #fdf6ec;
+      padding: 0.5rem 1.4rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
 <body>
   <header>
     <h1>boji</h1>
-    <h2>scribble</h2>
   </header>
-  <main>
-    <div id="scribble-content"></div>
-  </main>
-  <footer>
-    <a href="scribble.html">⬅ back</a>
-  </footer>
+
+  <div id="scribble-view-main">
+    <div id="back-row">
+      <a href="scribble.html" class="nav-back">← back</a>
+    </div>
+    <h2>past scribbles</h2>
+    <div id="scribble-cards"></div>
+    <div id="scribble-empty" style="display:none;">no scribbles yet — go jot something down</div>
+  </div>
+
+  <div id="toast"></div>
+
   <script>
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
+    (function() {
+      var saved = localStorage.getItem('boji-theme');
+      if (saved) document.body.classList.add('theme-' + saved);
+    })();
+
+    var container = document.getElementById('scribble-cards');
+    var emptyMsg  = document.getElementById('scribble-empty');
+
+    function loadScribbles() {
+      var stored = localStorage.getItem('scribbles');
+      return stored ? JSON.parse(stored) : [];
     }
 
-    const contentDiv = document.getElementById('scribble-content');
-    const id = getQueryParam('id');
-    if (id) {
-      const stored = localStorage.getItem('scribbles');
-      const scribbles = stored ? JSON.parse(stored) : [];
-      const entry = scribbles.find(s => s.id === id);
-      if (entry) {
-        contentDiv.textContent = entry.text;
-      } else {
-        contentDiv.textContent = 'Scribble not found';
-      }
-    } else {
-      contentDiv.textContent = 'No scribble specified';
+    function saveScribbles(arr) {
+      localStorage.setItem('scribbles', JSON.stringify(arr));
     }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      var d = new Date(iso);
+      return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+           + ' at ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2200);
+    }
+
+    function render() {
+      var scribbles = loadScribbles();
+      container.innerHTML = '';
+      if (scribbles.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+      scribbles.slice().reverse().forEach(function(entry) {
+        var card = document.createElement('div');
+        card.className = 'scribble-card';
+
+        var dateEl = document.createElement('div');
+        dateEl.className = 'scribble-card-date';
+        dateEl.textContent = formatDate(entry.date);
+
+        var titleEl = document.createElement('div');
+        titleEl.className = 'scribble-card-title';
+        titleEl.textContent = entry.title || '';
+        if (!entry.title) titleEl.style.display = 'none';
+
+        var textEl = document.createElement('div');
+        textEl.className = 'scribble-card-text';
+        textEl.textContent = entry.text;
+
+        var actions = document.createElement('div');
+        actions.className = 'scribble-card-actions';
+
+        var taskBtn = document.createElement('button');
+        taskBtn.className = 'btn-task';
+        taskBtn.textContent = '+ add as task';
+        taskBtn.addEventListener('click', function() {
+          var tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+          tasks.push({ text: entry.text.slice(0, 80), completed: false, date: new Date().toISOString() });
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          showToast('added to tasks ✓');
+        });
+
+        var delBtn = document.createElement('button');
+        delBtn.className = 'btn-delete';
+        delBtn.textContent = 'delete';
+        delBtn.addEventListener('click', function() {
+          var arr = loadScribbles();
+          arr = arr.filter(function(s) { return s.id !== entry.id; });
+          saveScribbles(arr);
+          card.style.transition = 'opacity 0.3s, transform 0.3s';
+          card.style.opacity = '0';
+          card.style.transform = 'translateX(30px)';
+          setTimeout(render, 300);
+        });
+
+        actions.appendChild(taskBtn);
+        actions.appendChild(delBtn);
+        card.appendChild(dateEl);
+        card.appendChild(titleEl);
+        card.appendChild(textEl);
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    render();
   </script>
+  <script src="pet-widget.js"></script>
 </body>
 </html>

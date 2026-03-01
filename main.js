@@ -13,6 +13,19 @@ function createWindow() {
   });
 
   win.loadFile('index.html');
+
+  // Hidden background window that keeps audio alive across page navigations
+  const audioBg = new BrowserWindow({
+    width: 1,
+    height: 1,
+    show: false,
+    skipTaskbar: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+  audioBg.loadFile('music-bg.html');
 }
 
 app.whenReady().then(createWindow);

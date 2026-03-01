@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>boji - Music</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -14,121 +17,73 @@
     <h2>music</h2>
   </header>
 
-  <main>
-    <button id="pink-noise">▶ pink noise</button>
-    <br><br>
-    <button id="white-noise">▶ white noise</button>
-    <p id="noise-status" style="margin-top:1rem; color:#888;"></p>
+  <main style="padding: 2rem 3rem; flex-direction: column; gap: 1.2rem; max-width: 400px;">
+    <section style="padding: 1.5rem 2rem; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: 0 3px 12px var(--shadow-sm); display: flex; flex-direction: column; gap: 1rem;">
+      <button id="pink-noise">▶ pink noise</button>
+      <button id="white-noise">▶ white noise</button>
+      <p id="noise-status" style="margin: 0; font-style: italic; color: var(--text-light); font-size: 0.9rem;"></p>
+    </section>
+
+    <button id="mute-btn" style="align-self: flex-start; font-size: 1rem; padding: 0.6rem 1.6rem; border-radius: 22px; border: 2px solid var(--border); background: rgba(var(--btn-rgb),0.16); color: var(--text); transition: background 0.15s, transform 0.15s;">mute</button>
   </main>
 
   <footer>
-    <a href="settings.html">⬅ back</a>
+    <a href="settings.html">← back</a>
   </footer>
 
   <script>
-    var audioCtx = null;
-    var currentSource = null;
-    var gainNode = null;
+    var pinkBtn  = document.getElementById('pink-noise');
+    var whiteBtn = document.getElementById('white-noise');
+    var status   = document.getElementById('noise-status');
 
-    function getCtx() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      return audioCtx;
+    function getPlaying() {
+      return localStorage.getItem('boji-music') || '';
     }
 
-    function stopNoise() {
-      if (currentSource) {
-        currentSource.stop();
-        currentSource.disconnect();
-        currentSource = null;
-      }
-      if (gainNode) {
-        gainNode.disconnect();
-        gainNode = null;
-      }
+    function setPlaying(val) {
+      localStorage.setItem('boji-music', val);
+      updateUI();
     }
 
-    function playWhiteNoise() {
-      var ctx = getCtx();
-      var bufferSize = ctx.sampleRate * 2;
-      var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      var data = buffer.getChannelData(0);
-      for (var i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * 0.15;
-      }
-      var source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.loop = true;
-      gainNode = ctx.createGain();
-      gainNode.gain.value = 0.6;
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      source.start();
-      return source;
+    var muteBtn = document.getElementById('mute-btn');
+
+    function getMuted() {
+      return localStorage.getItem('boji-muted') === 'true';
     }
 
-    function playPinkNoise() {
-      var ctx = getCtx();
-      var bufferSize = ctx.sampleRate * 2;
-      var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      var data = buffer.getChannelData(0);
-      var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-      for (var i = 0; i < bufferSize; i++) {
-        var white = Math.random() * 2 - 1;
-        b0 = 0.99886*b0 + white*0.0555179;
-        b1 = 0.99332*b1 + white*0.0750759;
-        b2 = 0.96900*b2 + white*0.1538520;
-        b3 = 0.86650*b3 + white*0.3104856;
-        b4 = 0.55000*b4 + white*0.5329522;
-        b5 = -0.7616*b5 - white*0.0168980;
-        data[i] = (b0+b1+b2+b3+b4+b5+b6 + white*0.5362) * 0.05;
-        b6 = white * 0.115926;
-      }
-      var source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.loop = true;
-      gainNode = ctx.createGain();
-      gainNode.gain.value = 0.7;
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      source.start();
-      return source;
+    function updateUI() {
+      var p = getPlaying();
+      var m = getMuted();
+      pinkBtn.textContent  = (p === 'pink')  ? '⏹ pink noise'  : '▶ pink noise';
+      whiteBtn.textContent = (p === 'white') ? '⏹ white noise' : '▶ white noise';
+      status.textContent   = p ? (m ? 'muted — ' : 'now playing: ') + p + ' noise' : '';
+      muteBtn.textContent  = m ? 'unmute' : 'mute';
+      muteBtn.style.background = m ? 'rgba(var(--btn-rgb),0.38)' : 'rgba(var(--btn-rgb),0.16)';
+      muteBtn.style.borderColor = m ? 'var(--accent)' : 'var(--border)';
     }
 
-    var playing = null;
-
-    document.getElementById('pink-noise').addEventListener('click', function() {
-      if (playing === 'pink') {
-        stopNoise();
-        playing = null;
-        this.textContent = '▶ pink noise';
-        document.getElementById('noise-status').textContent = '';
-      } else {
-        stopNoise();
-        currentSource = playPinkNoise();
-        playing = 'pink';
-        this.textContent = '⏹ pink noise';
-        document.getElementById('white-noise').textContent = '▶ white noise';
-        document.getElementById('noise-status').textContent = 'now playing: pink noise';
-      }
+    pinkBtn.addEventListener('click', function() {
+      setPlaying(getPlaying() === 'pink' ? '' : 'pink');
     });
 
-    document.getElementById('white-noise').addEventListener('click', function() {
-      if (playing === 'white') {
-        stopNoise();
-        playing = null;
-        this.textContent = '▶ white noise';
-        document.getElementById('noise-status').textContent = '';
-      } else {
-        stopNoise();
-        currentSource = playWhiteNoise();
-        playing = 'white';
-        this.textContent = '⏹ white noise';
-        document.getElementById('pink-noise').textContent = '▶ pink noise';
-        document.getElementById('noise-status').textContent = 'now playing: white noise';
-      }
+    whiteBtn.addEventListener('click', function() {
+      setPlaying(getPlaying() === 'white' ? '' : 'white');
     });
+
+    muteBtn.addEventListener('click', function() {
+      localStorage.setItem('boji-muted', getMuted() ? 'false' : 'true');
+      updateUI();
+    });
+
+    updateUI();
   </script>
   <script src="pet-widget.js"></script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('boji-theme');
+      if (saved) document.body.classList.add('theme-' + saved);
+    })();
+  </script>
 
 </body>
 </html>

@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>boji - My Pet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
     #pet-page-main {
@@ -113,7 +116,7 @@
   </main>
 
   <footer style="margin-top:2rem;">
-    <a href="index.html">⬅ back</a>
+    <a href="index.html">← back</a>
   </footer>
 
   <script src="pet-widget.js"></script>
@@ -134,7 +137,7 @@
     }
 
     function happinessInfo(pct) {
-      if (pct >= 76) return { label: 'so happy!! ✨', speed: 300 };
+      if (pct >= 76) return { label: 'so happy!!', speed: 300 };
       if (pct >= 51) return { label: 'pretty happy!', speed: 500 };
       if (pct >= 26) return { label: 'doing okay',   speed: 800 };
       return             { label: 'feeling blue...', speed: 1200 };
@@ -198,9 +201,8 @@
   </script>
   <script>
     (function() {
-      var themes = { dreamscape: '#fadadd', comfort: '#cce5ff', original: '#ffffff' };
       var saved = localStorage.getItem('boji-theme');
-      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+      if (saved) document.body.classList.add('theme-' + saved);
     })();
   </script>
 </body>

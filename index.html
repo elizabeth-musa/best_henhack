@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>boji - Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -23,15 +26,28 @@
       <nav id="home-nav">
         <button id="scribble-link" onclick="location.href='scribble.html'">scribble log</button>
         <button id="calendar-link" onclick="location.href='calendar.html'">calendar</button>
-        <button id="pet-link" onclick="location.href='pet-page.html'">my pet 🐾</button>
-        <button id="chill-link" onclick="location.href='chillPage.html'">chill timer ⏱</button>
+        <button id="pet-link" onclick="location.href='pet-page.html'">my pet</button>
+        <button id="chill-link" onclick="location.href='chillPage.html'">pomodoro timer</button>
       </nav>
     </div>
 
-    <!-- progress indicator placeholder -->
+    <!-- task tracking ring -->
     <section id="progress-section">
       <div id="circular-progress">
-        <span id="progress-text">0%</span>
+        <svg id="progress-ring" viewBox="0 0 160 160" width="160" height="160">
+          <defs>
+            <linearGradient id="ring-gradient" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f2b8b8"/>
+              <stop offset="100%" stop-color="#d4a96a"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-track" cx="80" cy="80" r="65"/>
+          <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="65" transform="rotate(-90 80 80)"/>
+        </svg>
+        <div id="progress-text-wrap">
+          <span id="progress-text">0%</span>
+          <span id="progress-sublabel">tasks done</span>
+        </div>
       </div>
     </section>
 
@@ -45,9 +61,9 @@
       <div id="task-input-row">
         <input type="text" id="task-input" placeholder="add a task...">
         <div id="priority-picker">
-          <button class="priority-btn" data-priority="high"   title="priority">🔴</button>
-          <button class="priority-btn" data-priority="medium" title="mid">🟡</button>
-          <button class="priority-btn" data-priority="low"    title="eh">🟢</button>
+          <button class="priority-btn" data-priority="high"   title="high">H</button>
+          <button class="priority-btn" data-priority="medium" title="medium">M</button>
+          <button class="priority-btn" data-priority="low"    title="low">L</button>
         </div>
         <button id="task-submit">add</button>
       </div>
@@ -62,7 +78,7 @@
 
   </div> <!-- end container -->
   <footer>
-    <a href="settings.html"><img id="settings-icon" src="settings.png" alt="settings"></a>
+    <a href="settings.html"><img id="settings-icon" src="picture/Untitled_Artwork 31.png" alt="settings"></a>
   </footer>
 
   <!-- modal for adding tasks -->
@@ -78,16 +94,17 @@
   </div>
 
   <!-- chatbot widget -->
-  <button id="chat-bubble">💬 how are we feeling?</button>
+  <button id="chat-bubble">smart study</button>
   <div id="chat-panel">
-    <div id="chat-question">what are we feeling today?</div>
+    <div id="chat-question">smart study — how's your energy today?</div>
     <div id="chat-options">
-      <button class="chat-opt energy-high"  data-energy="high">⚡ high energy — let's crush it</button>
-      <button class="chat-opt energy-medium" data-energy="medium">🌟 medium energy — steady & sure</button>
-      <button class="chat-opt energy-low"   data-energy="low">🌺 low energy day — be gentle</button>
+      <button class="chat-opt energy-high"  data-energy="high">high energy — let's crush it</button>
+      <button class="chat-opt energy-medium" data-energy="medium">medium energy — steady & sure</button>
+      <button class="chat-opt energy-low"   data-energy="low">low energy day — be gentle</button>
     </div>
-    <div id="chat-response"></div>
-    <button id="chat-close">close</button>
+    <div id="chat-response"></div>    <div id="chat-reset-row" style="display:none;">
+      <button id="chat-reset">↩ change my mood</button>
+    </div>    <button id="chat-close">close</button>
   </div>
 
   <script src="renderer.js"></script>
@@ -97,9 +114,9 @@
     (function() {
       var timerMins = { high: 45, medium: 25, low: 10 };
       var responses = {
-        high:   "you're radiating energy today! ✨ tackle those red tasks first.<br><br>suggested focus session: <strong>45 minutes</strong> &mdash; <a href='chillPage.html?mins=45' style='color:#b05a5a;'>start timer →</a>",
-        medium: "a balanced day 🌟 work through the yellows and take breaks.<br><br>suggested focus session: <strong>25 minutes</strong> (classic pomodoro) &mdash; <a href='chillPage.html?mins=25' style='color:#b05a5a;'>start timer →</a>",
-        low:    "it's okay to go slow today 🌺 start with something green & easy.<br><br>suggested focus session: <strong>10 minutes</strong> &mdash; <a href='chillPage.html?mins=10' style='color:#b05a5a;'>start timer →</a>"
+        high:   "you're radiating energy today! tackle those red tasks first.<br><br>suggested focus session: <strong>45 minutes</strong> &mdash; <a href='chillPage.html?mins=45' style='color:#b05a5a;'>start timer →</a>",
+        medium: "a balanced day — work through the yellows and take breaks.<br><br>suggested focus session: <strong>25 minutes</strong> (classic pomodoro) &mdash; <a href='chillPage.html?mins=25' style='color:#b05a5a;'>start timer →</a>",
+        low:    "it's okay to go slow today — start with something green & easy.<br><br>suggested focus session: <strong>10 minutes</strong> &mdash; <a href='chillPage.html?mins=10' style='color:#b05a5a;'>start timer →</a>"
       };
       var todayKey = 'boji-energy-' + new Date().toDateString();
       var bubble   = document.getElementById('chat-bubble');
@@ -113,9 +130,22 @@
         document.getElementById('chat-question').style.display = 'none';
         resp.innerHTML = responses[energy];
         resp.style.display = 'block';
-        var labels = { high: '⚡ high energy', medium: '🌟 medium energy', low: '🌺 low energy' };
-        bubble.textContent = '💬 ' + labels[energy];
+        document.getElementById('chat-reset-row').style.display = 'block';
+        var labels = { high: 'high energy', medium: 'medium energy', low: 'low energy' };
+        bubble.textContent = 'smart study';
       }
+
+      function resetMood() {
+        localStorage.removeItem(todayKey);
+        resp.style.display = 'none';
+        resp.innerHTML = '';
+        document.getElementById('chat-reset-row').style.display = 'none';
+        document.getElementById('chat-options').style.display = 'flex';
+        document.getElementById('chat-question').style.display = 'block';
+        bubble.textContent = 'smart study';
+      }
+
+      document.getElementById('chat-reset').addEventListener('click', resetMood);
 
       // auto-open if not answered today
       if (!localStorage.getItem(todayKey)) panel.classList.add('open');
@@ -135,9 +165,8 @@
   </script>
   <script>
     (function() {
-      var themes = { dreamscape: '#fadadd', comfort: '#cce5ff', original: '#ffffff' };
       var saved = localStorage.getItem('boji-theme');
-      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+      if (saved) document.body.classList.add('theme-' + saved);
     })();
   </script>
 

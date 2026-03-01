@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- pixel art two-gear settings icon -->
+
+  <!-- large gear (top-left) -->
+  <!-- center: 11,13 radius ~7 -->
+  <!-- top tooth -->
+  <rect x="9"  y="2"  width="2" height="2" fill="#2d2d2d"/>
+  <rect x="11" y="2"  width="2" height="2" fill="#2d2d2d"/>
+  <!-- top-right tooth -->
+  <rect x="15" y="4"  width="2" height="2" fill="#2d2d2d"/>
+  <rect x="16" y="5"  width="2" height="2" fill="#2d2d2d"/>
+  <!-- right tooth -->
+  <rect x="18" y="8"  width="2" height="2" fill="#2d2d2d"/>
+  <rect x="18" y="10" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom-right tooth -->
+  <rect x="16" y="14" width="2" height="2" fill="#2d2d2d"/>
+  <rect x="15" y="15" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom tooth -->
+  <rect x="11" y="17" width="2" height="2" fill="#2d2d2d"/>
+  <rect x="9"  y="17" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom-left tooth -->
+  <rect x="5"  y="15" width="2" height="2" fill="#2d2d2d"/>
+  <rect x="4"  y="14" width="2" height="2" fill="#2d2d2d"/>
+  <!-- left tooth -->
+  <rect x="2"  y="10" width="2" height="2" fill="#2d2d2d"/>
+  <rect x="2"  y="8"  width="2" height="2" fill="#2d2d2d"/>
+  <!-- top-left tooth -->
+  <rect x="4"  y="5"  width="2" height="2" fill="#2d2d2d"/>
+  <rect x="5"  y="4"  width="2" height="2" fill="#2d2d2d"/>
+  <!-- gear body ring -->
+  <rect x="5"  y="6"  width="12" height="1" fill="#2d2d2d"/>
+  <rect x="4"  y="7"  width="1"  height="6" fill="#2d2d2d"/>
+  <rect x="17" y="7"  width="1"  height="6" fill="#2d2d2d"/>
+  <rect x="5"  y="13" width="12" height="1" fill="#2d2d2d"/>
+  <rect x="5"  y="7"  width="12" height="6" fill="#2d2d2d"/>
+  <!-- inner hole -->
+  <rect x="8"  y="8"  width="6"  height="4" fill="#f5f0e8"/>
+  <rect x="9"  y="7"  width="4"  height="6" fill="#f5f0e8"/>
+
+  <!-- small gear (bottom-right) -->
+  <!-- center: 21,22 radius ~5 -->
+  <!-- top tooth -->
+  <rect x="20" y="15" width="2" height="2" fill="#2d2d2d"/>
+  <!-- right tooth -->
+  <rect x="26" y="20" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom tooth -->
+  <rect x="20" y="27" width="2" height="2" fill="#2d2d2d"/>
+  <!-- left tooth -->
+  <rect x="14" y="20" width="2" height="2" fill="#2d2d2d"/>
+  <!-- top-right tooth -->
+  <rect x="24" y="16" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom-right tooth -->
+  <rect x="24" y="25" width="2" height="2" fill="#2d2d2d"/>
+  <!-- bottom-left -->
+  <rect x="16" y="25" width="2" height="2" fill="#2d2d2d"/>
+  <!-- top-left -->
+  <rect x="16" y="16" width="2" height="2" fill="#2d2d2d"/>
+  <!-- gear body -->
+  <rect x="16" y="17" width="10" height="8" fill="#2d2d2d"/>
+  <rect x="15" y="18" width="1"  height="6" fill="#2d2d2d"/>
+  <rect x="26" y="18" width="1"  height="6" fill="#2d2d2d"/>
+  <rect x="17" y="16" width="8"  height="1" fill="#2d2d2d"/>
+  <rect x="17" y="25" width="8"  height="1" fill="#2d2d2d"/>
+  <!-- inner hole -->
+  <rect x="19" y="19" width="4"  height="4" fill="#f5f0e8"/>
+  <rect x="18" y="20" width="6"  height="2" fill="#f5f0e8"/>
+</svg>

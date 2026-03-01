@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>boji - Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -19,58 +22,47 @@
     <!-- Main Settings Buttons -->
     <section id="settingsMenu">
       <button type="button" onclick="showThemes()">themes</button>
-      <br><br>
       <button type="button" onclick="location.href='music.html'">music</button>
     </section>
 
     <!-- Themes Section (Hidden Initially) -->
     <section id="themesSection" style="display:none;">
-      <h3>themes</h3>
-
-      <button type="button" onclick="applyTheme('dreamscape')">dreamscape 🌸</button>
-      <br><br>
-
-      <button type="button" onclick="applyTheme('comfort')">comfort 💙</button>
-      <br><br>
+      <h3 style="margin:0; font-size:1rem; color:var(--text-light); font-weight:normal; letter-spacing:0.08em;">themes</h3>
 
       <button type="button" onclick="applyTheme('original')">original</button>
-      <br><br>
+      <button type="button" onclick="applyTheme('dreamscape')">dreamscape</button>
+      <button type="button" onclick="applyTheme('comfort')">comfort</button>
 
-      <button type="button" onclick="goBack()">⬅ back</button>
+      <a href="#" class="nav-back" onclick="goBack(); return false;">← back</a>
     </section>
 
   </main>
 
-  <footer>
-    <a href="index.html"> Home</a>
+  <footer style="margin-top:2rem;">
+    <a href="index.html">← back</a>
   </footer>
 
   <script>
-    var themes = {
-      dreamscape: '#fadadd',
-      comfort:    '#cce5ff',
-      original:   '#ffffff'
-    };
-
     function applyTheme(name) {
       localStorage.setItem('boji-theme', name);
-      document.body.style.backgroundColor = themes[name] || '';
+      document.body.classList.remove('theme-original', 'theme-dreamscape', 'theme-comfort');
+      if (name) document.body.classList.add('theme-' + name);
     }
 
     function showThemes() {
       document.getElementById("settingsMenu").style.display = "none";
-      document.getElementById("themesSection").style.display = "block";
+      document.getElementById("themesSection").style.display = "flex";
     }
 
     function goBack() {
       document.getElementById("themesSection").style.display = "none";
-      document.getElementById("settingsMenu").style.display = "block";
+      document.getElementById("settingsMenu").style.display = "flex";
     }
 
     // apply saved theme on load
     (function() {
       var saved = localStorage.getItem('boji-theme');
-      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+      if (saved) document.body.classList.add('theme-' + saved);
     })();
   </script>
   <script src="pet-widget.js"></script>
