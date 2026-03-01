@@ -2,32 +2,23 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
-// Optional: auto-reload during development
-try {
-  require('electron-reload')(__dirname, {
-    electron: require(`${__dirname}/node_modules/electron`)
-  });
-} catch (_) {
-  console.log('electron-reload not installed, skipping auto-reload');
-}
-
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false, // allows Node.js in renderer
+      contextIsolation: false,
     },
   });
 
-  win.loadFile('index.html'); // Your front-end file
+  win.loadFile('index.html');
 }
 
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit(); // Quit on Windows/Linux
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('activate', () => {
