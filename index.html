@@ -23,6 +23,8 @@
       <nav id="home-nav">
         <button id="scribble-link" onclick="location.href='scribble.html'">scribble log</button>
         <button id="calendar-link" onclick="location.href='calendar.html'">calendar</button>
+        <button id="pet-link" onclick="location.href='pet-page.html'">my pet 🐾</button>
+        <button id="chill-link" onclick="location.href='chillPage.html'">chill timer ⏱</button>
       </nav>
     </div>
 
@@ -42,7 +44,17 @@
     <section id="tasks-section">
       <div id="task-input-row">
         <input type="text" id="task-input" placeholder="add a task...">
+        <div id="priority-picker">
+          <button class="priority-btn" data-priority="high"   title="priority">🔴</button>
+          <button class="priority-btn" data-priority="medium" title="mid">🟡</button>
+          <button class="priority-btn" data-priority="low"    title="eh">🟢</button>
+        </div>
         <button id="task-submit">add</button>
+      </div>
+      <div id="task-sort-row">
+        <span id="sort-label">sort:</span>
+        <button class="sort-btn active" data-sort="default">added</button>
+        <button class="sort-btn" data-sort="priority">priority</button>
       </div>
       <ul id="task-list"></ul>
     </section>
@@ -65,7 +77,62 @@
     </div>
   </div>
 
+  <!-- chatbot widget -->
+  <button id="chat-bubble">💬 how are we feeling?</button>
+  <div id="chat-panel">
+    <div id="chat-question">what are we feeling today?</div>
+    <div id="chat-options">
+      <button class="chat-opt energy-high"  data-energy="high">⚡ high energy — let's crush it</button>
+      <button class="chat-opt energy-medium" data-energy="medium">🌟 medium energy — steady & sure</button>
+      <button class="chat-opt energy-low"   data-energy="low">🌺 low energy day — be gentle</button>
+    </div>
+    <div id="chat-response"></div>
+    <button id="chat-close">close</button>
+  </div>
+
   <script src="renderer.js"></script>
+  <script src="pet-widget.js"></script>
+  <script>
+    // chatbot logic
+    (function() {
+      var timerMins = { high: 45, medium: 25, low: 10 };
+      var responses = {
+        high:   "you're radiating energy today! ✨ tackle those red tasks first.<br><br>suggested focus session: <strong>45 minutes</strong> &mdash; <a href='chillPage.html?mins=45' style='color:#b05a5a;'>start timer →</a>",
+        medium: "a balanced day 🌟 work through the yellows and take breaks.<br><br>suggested focus session: <strong>25 minutes</strong> (classic pomodoro) &mdash; <a href='chillPage.html?mins=25' style='color:#b05a5a;'>start timer →</a>",
+        low:    "it's okay to go slow today 🌺 start with something green & easy.<br><br>suggested focus session: <strong>10 minutes</strong> &mdash; <a href='chillPage.html?mins=10' style='color:#b05a5a;'>start timer →</a>"
+      };
+      var todayKey = 'boji-energy-' + new Date().toDateString();
+      var bubble   = document.getElementById('chat-bubble');
+      var panel    = document.getElementById('chat-panel');
+      var opts     = document.querySelectorAll('.chat-opt');
+      var resp     = document.getElementById('chat-response');
+      var closeBtn = document.getElementById('chat-close');
+
+      function showResponse(energy) {
+        document.getElementById('chat-options').style.display = 'none';
+        document.getElementById('chat-question').style.display = 'none';
+        resp.innerHTML = responses[energy];
+        resp.style.display = 'block';
+        var labels = { high: '⚡ high energy', medium: '🌟 medium energy', low: '🌺 low energy' };
+        bubble.textContent = '💬 ' + labels[energy];
+      }
+
+      // auto-open if not answered today
+      if (!localStorage.getItem(todayKey)) panel.classList.add('open');
+      else showResponse(localStorage.getItem(todayKey));
+
+      bubble.addEventListener('click', function() { panel.classList.toggle('open'); });
+      closeBtn.addEventListener('click', function() { panel.classList.remove('open'); });
+
+      opts.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var energy = btn.dataset.energy;
+          localStorage.setItem(todayKey, energy);
+          showResponse(energy);
+        });
+      });
+    })();
+  </script>
   <script>
     (function() {
       var themes = { dreamscape: '#fadadd', comfort: '#cce5ff', original: '#ffffff' };

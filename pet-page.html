@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>boji - My Pet</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #pet-page-main {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3rem;
+      padding: 2rem 2rem 0;
+      flex-wrap: wrap;
+    }
+    /* left column: active pet + happiness */
+    #pet-status-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      min-width: 200px;
+    }
+    #current-pet-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    #current-pet-display img { width: 110px; height: 110px; image-rendering: pixelated; }
+    #selected-name { font-size: 1.1rem; color: #666; }
+    #happiness-section { width: 100%; max-width: 240px; }
+    #happiness-bar-bg { background: #eee; border-radius: 10px; height: 18px; overflow: hidden; border: 1px solid #ccc; }
+    #happiness-bar-fill { height: 100%; background: linear-gradient(90deg, #f9a8d4, #fbcfe8); width: 0%; transition: width 0.5s; border-radius: 10px; }
+    #happiness-label { margin-top: 0.4rem; font-size: 0.9rem; color: #555; text-align: center; }
+    /* right column: choose pet */
+    #pet-choose-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    #pet-choose-col h3 { margin: 0; }
+    #pet-choices {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pet-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 3px solid transparent;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .pet-option:hover { background: rgba(0,0,0,0.05); }
+    .pet-option.selected { border-color: #f9a8d4; background: rgba(249,168,212,0.15); }
+    .pet-option img { width: 80px; height: 80px; image-rendering: pixelated; }
+    .pet-option span { margin-top: 0.5rem; font-size: 1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>boji</h1>
+    <h2>my pet</h2>
+  </header>
+
+  <main id="pet-page-main">
+
+    <!-- left: active pet + happiness -->
+    <div id="pet-status-col">
+      <section id="current-pet-display">
+        <img id="active-pet-sprite" src="" alt="your pet">
+        <div id="selected-name"></div>
+      </section>
+
+      <section id="happiness-section">
+        <div id="happiness-bar-bg">
+          <div id="happiness-bar-fill"></div>
+        </div>
+        <div id="happiness-label"></div>
+      </section>
+
+      <p style="color:#888; font-size:0.85rem; text-align:center;">complete tasks to make your pet happier!</p>
+    </div>
+
+    <!-- right: choose pet -->
+    <div id="pet-choose-col">
+      <h3>choose your pet</h3>
+      <div id="pet-choices">
+        <div class="pet-option" data-pet="monkey">
+          <img src="picture/monkey1.png" alt="monkey" data-frames="picture/monkey1.png,picture/monkey2.png">
+          <span>monkey</span>
+        </div>
+        <div class="pet-option" data-pet="duck">
+          <img src="picture/duck1.png" alt="duck" data-frames="picture/duck1.png,picture/duck2.png">
+          <span>duck</span>
+        </div>
+        <div class="pet-option" data-pet="cat">
+          <img src="picture/cat1.png" alt="cat" data-frames="picture/cat1.png,picture/cat2.png">
+          <span>cat</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer style="margin-top:2rem;">
+    <a href="index.html">⬅ back</a>
+  </footer>
+
+  <script src="pet-widget.js"></script>
+  <script>
+    var PETS = {
+      monkey: ['picture/monkey1.png', 'picture/monkey2.png'],
+      duck:   ['picture/duck1.png',   'picture/duck2.png'],
+      cat:    ['picture/cat1.png',    'picture/cat2.png']
+    };
+
+    function getProgress() {
+      var stored = localStorage.getItem('tasks');
+      if (!stored) return 0;
+      var tasks = JSON.parse(stored);
+      if (!tasks.length) return 0;
+      var done = tasks.filter(function(t){ return t.completed; }).length;
+      return Math.round((done / tasks.length) * 100);
+    }
+
+    function happinessInfo(pct) {
+      if (pct >= 76) return { label: 'so happy!! ✨', speed: 300 };
+      if (pct >= 51) return { label: 'pretty happy!', speed: 500 };
+      if (pct >= 26) return { label: 'doing okay',   speed: 800 };
+      return             { label: 'feeling blue...', speed: 1200 };
+    }
+
+    var activeInterval = null;
+    var activeFrame = 0;
+
+    function updateDisplay() {
+      var petName = localStorage.getItem('boji-pet') || 'cat';
+      var frames  = PETS[petName];
+      var pct     = getProgress();
+      var info    = happinessInfo(pct);
+
+      // happiness bar
+      document.getElementById('happiness-bar-fill').style.width = pct + '%';
+      document.getElementById('happiness-label').textContent = info.label + ' (' + pct + '% tasks done)';
+
+      // active pet sprite
+      var sprite = document.getElementById('active-pet-sprite');
+      document.getElementById('selected-name').textContent = petName;
+
+      if (activeInterval) clearInterval(activeInterval);
+      activeFrame = 0;
+      sprite.src = frames[0];
+      activeInterval = setInterval(function() {
+        activeFrame = 1 - activeFrame;
+        sprite.src = frames[activeFrame];
+      }, info.speed);
+
+      // highlight selected option
+      document.querySelectorAll('.pet-option').forEach(function(el) {
+        el.classList.toggle('selected', el.dataset.pet === petName);
+      });
+    }
+
+    // animate preview images on hover
+    var previewIntervals = {};
+    document.querySelectorAll('.pet-option').forEach(function(el) {
+      var img    = el.querySelector('img');
+      var frames = img.dataset.frames.split(',');
+      var f = 0;
+      el.addEventListener('mouseenter', function() {
+        previewIntervals[el.dataset.pet] = setInterval(function() {
+          f = 1 - f;
+          img.src = frames[f];
+        }, 500);
+      });
+      el.addEventListener('mouseleave', function() {
+        clearInterval(previewIntervals[el.dataset.pet]);
+        f = 0;
+        img.src = frames[0];
+      });
+      el.addEventListener('click', function() {
+        localStorage.setItem('boji-pet', el.dataset.pet);
+        updateDisplay();
+      });
+    });
+
+    updateDisplay();
+  </script>
+  <script>
+    (function() {
+      var themes = { dreamscape: '#fadadd', comfort: '#cce5ff', original: '#ffffff' };
+      var saved = localStorage.getItem('boji-theme');
+      if (saved && themes[saved]) document.body.style.backgroundColor = themes[saved];
+    })();
+  </script>
+</body>
+</html>
